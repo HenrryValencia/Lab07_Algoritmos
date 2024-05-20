@@ -1,144 +1,161 @@
 package BaseData;
+public class BSTree <E extends Comparable<E>> {
+    class Node {
+        protected E data;
+        protected Node left, right;
 
-public class BSTree <E extends Comparable<E>>{
-	class Node {
-		protected E data;
-		protected Node left,right;
-		
-		public Node(E data) {
-			this (data,null,null);
-		}
-		public Node(E data, Node left, Node right) {
-			this.data = data;
-			this.left = left;
-			this.right = right;
-		}
-		public E getData() {return this.data;}
-		public void setRight(Node x){this.right = x;}
-		public void setLeft(Node x){this.left = x;}
-	}
-	
-	public Node current;
-	public Node parent;
-	public Node aux;
-	
-	private Node root;
-	
-	public BSTree() {this.root = null;}
-	
-	public boolean isEmpty() {return this.root == null;}
-	
-	public void insert(E x) throws Exception {
-		Node newNode = new Node(x);
-		//caso vacio...
-		if (isEmpty()) {this.root = newNode ;return ;}
-		//existe el arbol...
-		this.current = root;
-		this.parent = null;
-		this.aux = null;
-		//
-		while(current!=null) {
-			this.parent = this.current;
-			if(x.compareTo(this.current.getData())>0) {
-				this.current = this.current.right;
-			}else{
-				this.current = this.current.left;
-			}
-		}
-		if(x.compareTo(this.current.getData())>0) {
-			this.parent.setRight(newNode);
-		}else {
-			this.parent.setLeft(newNode);
-		}
-		
-	}
-	
-	public boolean search(E x) throws Exception {
-		this.current = root;
-		while(current!=null) {
-			if(x.compareTo(this.current.getData())>0) {
-				this.current = this.current.right;
-			}else{
-				this.current = this.current.left;
-			}
-		}
-		if(this.current == null) {return false;}
-		return true;
-		
-	}
-	public void delete(E dato) {
-		
-		this.current = this.root;
-		this.parent = null;
-		boolean isLeftChild = true;
-		while(this.current!= null && this.current.getData()!= null) {
-			this.parent = this.current;
-			if(dato.compareTo(this.current.getData())<0) {
-				isLeftChild = true;
-			}else {isLeftChild = false;}
-			
-			//El nodo no existe...
-			
-			if(this.current == null) {
-				return;
-			}
-			
-			// si no tiene HIJOS...
-			
-			if (this.current.left == null && this.current.right == null) {
-	            if (this.current == this.root) {
-	                this.root = null;
-	            } else if (isLeftChild) {
-	                this.parent.left = null;
-	            } else {
-	                this.parent.right = null;
-	            }
-	        }
-			
-		}
-		
-	}
+        public Node(E data) {
+            this(data, null, null);
+        }
 
-	//EJERCICIO01
-	//Método countNodes(), que retorne el número de nodos no-hojas de un BST
-		
-	public int countNodes(Node node) {
-		if (node == null || (node.left == null && node.right == null)) {
-			return 0;
-		}
-	
-		return 1 + countNodes(node.left) + countNodes(node.right);
-	}
+        public Node(E data, Node left, Node right) {
+            this.data = data;
+            this.left = left;
+            this.right = right;
+        }
 
-	//Método height(), que retorne la altura de un nodo X cualquiera de un BST 
-	//siempre y cuando exista el árbol
+        public E getData() {
+            return this.data;
+        }
 
-	public int height(Node node) {
-		if (node == null) {
-			return -1; // La altura de un árbol vacío se considera -1
-		}
-	
-		int leftHeight = height(node.left);
-		int rightHeight = height(node.right);
-	
-		return Math.max(leftHeight, rightHeight) + 1;
-	}
-	
-	//EJERCICIO02
-	//Método que devuelve el total de nodos de un arbol, de forma recursiva
+        public void setRight(Node x) {
+            this.right = x;
+        }
 
-	public int countNodesTotal(Node node) {
-		if (node == null) {
-			return 0;
-		}
-	
-		return 1 + countNodes(node.left) + countNodes(node.right);
-	}
-	
+        public void setLeft(Node x) {
+            this.left = x;
+        }
+    }
 
-	@Override
-	public String toString() {
-		return " ";
-	}
+    private Node root;
 
-}
+    public BSTree() {
+        this.root = null;
+    }
+
+    public boolean isEmpty() {
+        return this.root == null;
+    }
+
+    public void insert(E x) throws Exception {
+        Node newNode = new Node(x);
+        if (isEmpty()) {
+            this.root = newNode;
+            return;
+        }
+        Node current = root;
+        Node parent = null;
+        while (current != null) {
+            parent = current;
+            if (x.compareTo(current.getData()) > 0) {
+                current = current.right;
+            } else {
+                current = current.left;
+            }
+        }
+        if (x.compareTo(parent.getData()) > 0) {
+            parent.setRight(newNode);
+        } else {
+            parent.setLeft(newNode);
+        }
+    }
+
+    public boolean search(E x) throws Exception {
+        Node current = root;
+        while (current != null) {
+            if (x.compareTo(current.getData()) == 0) {
+                return true;
+            } else if (x.compareTo(current.getData()) > 0) {
+                current = current.right;
+            } else {
+                current = current.left;
+            }
+        }
+        return false;
+    }
+
+    public void delete(E dato) {
+        Node current = root;
+        Node parent = null;
+        boolean isLeftChild = true;
+
+        // Buscar el nodo a eliminar
+        while (current != null && !dato.equals(current.getData())) {
+            parent = current;
+            if (dato.compareTo(current.getData()) < 0) {
+                isLeftChild = true;
+                current = current.left;
+            } else {
+                isLeftChild = false;
+                current = current.right;
+            }
+        }
+
+        if (current == null) {
+            return; // Nodo no encontrado
+        }
+
+        // Nodo sin hijos
+        if (current.left == null && current.right == null) {
+            if (current == root) {
+                root = null;
+            } else if (isLeftChild) {
+                parent.left = null;
+            } else {
+                parent.right = null;
+            }
+        }
+        // Nodo con un solo hijo (derecho)
+        else if (current.left == null) {
+            if (current == root) {
+                root = current.right;
+            } else if (isLeftChild) {
+                parent.left = current.right;
+            } else {
+                parent.right = current.right;
+            }
+        }
+        // Nodo con un solo hijo (izquierdo)
+        else if (current.right == null) {
+            if (current == root) {
+                root = current.left;
+            } else if (isLeftChild) {
+                parent.left = current.left;
+            } else {
+                parent.right = current.left;
+            }
+        }
+        // Nodo con dos hijos
+        else {
+            Node successor = getSuccessor(current);
+            if (current == root) {
+                root = successor;
+            } else if (isLeftChild) {
+                parent.left = successor;
+            } else {
+                parent.right = successor;
+            }
+            successor.left = current.left;
+        }
+    }
+
+    private Node getSuccessor(Node delNode) {
+        Node successorParent = delNode;
+        Node successor = delNode;
+        Node current = delNode.right;
+        while (current != null) {
+            successorParent = successor;
+            successor = current;
+            current = current.left;
+        }
+        if (successor != delNode.right) {
+            successorParent.left = successor.right;
+            successor.right = delNode.right;
+        }
+        return successor;
+    }
+
+    @Override
+    public String toString() {
+        return "BSTree";
+    }
