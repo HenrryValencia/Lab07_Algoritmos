@@ -98,6 +98,44 @@ public class BSTree <E extends Comparable<E>>{
 		}
 		
 	}
+
+	//EJERCICIO01
+	//Método countNodes(), que retorne el número de nodos no-hojas de un BST
+		
+	public int countNodes(Node node) {
+		if (node == null || (node.left == null && node.right == null)) {
+			return 0;
+		}
+	
+		return 1 + countNodes(node.left) + countNodes(node.right);
+	}
+
+	//Método height(), que retorne la altura de un nodo X cualquiera de un BST 
+	//siempre y cuando exista el árbol
+
+	public int height(Node node) {
+		if (node == null) {
+			return -1; // La altura de un árbol vacío se considera -1
+		}
+	
+		int leftHeight = height(node.left);
+		int rightHeight = height(node.right);
+	
+		return Math.max(leftHeight, rightHeight) + 1;
+	}
+	
+	//EJERCICIO02
+	//Método que devuelve el total de nodos de un arbol, de forma recursiva
+
+	public int countNodesTotal(Node node) {
+		if (node == null) {
+			return 0;
+		}
+	
+		return 1 + countNodes(node.left) + countNodes(node.right);
+	}
+	
+
 	@Override
 	public String toString() {
 		return " ";
