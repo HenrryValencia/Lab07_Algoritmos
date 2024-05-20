@@ -1,4 +1,5 @@
 package BaseData;
+import java.util.Stack;
 
 public class BSTree <E extends Comparable<E>>{
 	class Node {
@@ -163,28 +164,96 @@ public class BSTree <E extends Comparable<E>>{
 	public String toString() {
 		return " ";
 	}
-	
+	///////////
+	public int countNodes() {
+	    return countNonLeafNodes(root);
+	}
+
+	private int countNonLeafNodes(Node node) {
+	    if (node == null || (node.left == null && node.right == null)) {
+	        return 0; // Si el nodo es null o es una hoja, no se cuenta como nodo no hoja ojo!!!
+	    }
+	    return 1 + countNonLeafNodes(node.left) + countNonLeafNodes(node.right);
+	}
+	///////////
+	public int height(E x) {
+	    return getNodeHeight(root, x);
+	}
+
+	private int getNodeHeight(Node node, E x) {
+	    if (node == null) {
+	        return -1; // Si el nodo es null, no hay altura
+	    }
+
+	    if (node.getData().equals(x)) {
+	        return 0; // Altura de un nodo es 0
+	    }
+
+	    int leftHeight = getNodeHeight(node.left, x);
+	    int rightHeight = getNodeHeight(node.right, x);
+
+	    if (leftHeight == -1 && rightHeight == -1) {
+	        return -1; // El nodo no está en el árbol
+	    }
+
+	    return 1 + Math.max(leftHeight, rightHeight); // Altura del nodo actual es 1 más el maximo de las alturas de sus hijos
+	}
+	//////////
 	public int areaBST() {
-        return countLeaves(root) * height(root);
+        int leafNodes = countLeafNodes(root);
+        int treeHeight = height(root);
+        return leafNodes * treeHeight;
     }
 
-    private int countLeaves(Node node) {
+    private int countLeafNodes(Node node) {
         if (node == null) {
             return 0;
         }
         if (node.left == null && node.right == null) {
             return 1;
         }
-        return countLeaves(node.left) + countLeaves(node.right);
+        return countLeafNodes(node.left) + countLeafNodes(node.right);
     }
 
     private int height(Node node) {
         if (node == null) {
-            return 0;
+            return -1;
         }
         int leftHeight = height(node.left);
         int rightHeight = height(node.right);
         return 1 + Math.max(leftHeight, rightHeight);
     }
+    ///////////
+    public void iterativePreOrder() {
+        if (root == null) {
+            return;
+        }
 
+        Stack<Node> stack = new Stack<>();
+        stack.push(root);
+
+        while (!stack.isEmpty()) {
+            Node current = stack.pop();
+            System.out.print(current.getData() + " ");
+
+            if (current.right != null) {
+                stack.push(current.right);
+            }
+            if (current.left != null) {
+                stack.push(current.left);
+            }
+        }
+    }
+    ///////////
+    public int totalNodes() {
+        return countNodes(root);
+    }
+
+    private int countNodes(Node node) {
+        if (node == null) {
+            return 0;
+        }
+        return 1 + countNodes(node.left) + countNodes(node.right);
+    }
+	
 }
